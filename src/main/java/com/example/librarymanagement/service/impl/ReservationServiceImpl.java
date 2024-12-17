@@ -44,6 +44,16 @@ public class ReservationServiceImpl implements ReservationService {
         Book book = bookRepository.findById(reservationRequest.getBookId())
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy sách với ID: " + reservationRequest.getBookId()));
 
+        long borrowedBooksCount = borrowRecordRepository.countByUserAndStatusNot(user, BorrowStatus.RETURNED);
+        if (borrowedBooksCount >= 5) {
+            throw new IllegalStateException("Bạn đã mượn tối đa 5 cuốn sách. Vui lòng trả sách trước khi mượn thêm.");
+        }
+
+        long pendingReservationsCount = reservationRepository.countByUserAndStatus(user, ReservationStatus.PENDING);
+        if (pendingReservationsCount >= 5) {
+            throw new IllegalStateException("Bạn đã tạo tối đa 5 yêu cầu mượn sách. Vui lòng chờ phê duyệt.");
+        }
+
         boolean alreadyReserved = reservationRepository.existsByUserAndBookAndStatus(user, book, ReservationStatus.PENDING);
 
         if (alreadyReserved) {

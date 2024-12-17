@@ -2,6 +2,7 @@ package com.example.librarymanagement.repository;
 
 import com.example.librarymanagement.enums.BorrowStatus;
 import com.example.librarymanagement.model.BorrowRecord;
+import com.example.librarymanagement.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,8 @@ import java.util.Map;
 @Repository
 public interface BorrowRecordRepository extends JpaRepository<BorrowRecord, Long>, JpaSpecificationExecutor<BorrowRecord> {
     List<BorrowRecord> findByDueDateBeforeAndReturnDateIsNullAndStatusNot(LocalDate dueDate, BorrowStatus status);
+
+    long countByUserAndStatusNot(User user, BorrowStatus status);
 
     @Query("SELECT COUNT(br) FROM BorrowRecord br WHERE br.status <> 'RETURNED'")
     long countUnreturnedBooks();

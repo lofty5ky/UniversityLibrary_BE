@@ -18,6 +18,8 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     boolean existsByUserAndBookAndStatus(User user, Book book, ReservationStatus status);
 
+    long countByUserAndStatus(User user, ReservationStatus status);
+
     // Tìm tất cả các yêu cầu đặt sách theo trạng thái
     List<Reservation> findByStatus(ReservationStatus status);
 
